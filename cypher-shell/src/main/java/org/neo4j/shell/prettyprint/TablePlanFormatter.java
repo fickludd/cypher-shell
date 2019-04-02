@@ -23,8 +23,8 @@ import org.neo4j.driver.v1.summary.Plan;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
-import static org.neo4j.shell.prettyprint.OutputFormatter.NEWLINE;
-import static org.neo4j.shell.prettyprint.OutputFormatter.repeat;
+import static org.neo4j.shell.prettyprint.ValueFormatter.NEWLINE;
+import static org.neo4j.shell.prettyprint.ValueFormatter.repeat;
 
 class TablePlanFormatter {
 
@@ -54,7 +54,7 @@ class TablePlanFormatter {
     }
 
     private void pad(int width, char chr, @Nonnull StringBuilder result) {
-        result.append(OutputFormatter.repeat(chr, width));
+        result.append(ValueFormatter.repeat(chr, width));
     }
 
 
@@ -261,7 +261,9 @@ class TablePlanFormatter {
         String result = description.arguments().entrySet().stream().map(e -> {
             if (!IGNORED_ARGUMENTS.contains(e.getKey())) return serialize(e.getKey(), e.getValue());
             return "";
-        }).filter(OutputFormatter::isNotBlank).collect(Collectors.joining("; ")).replaceAll(UNNAMED_PATTERN_STRING, "");
+        }).filter(ValueFormatter::isNotBlank)
+                .collect(Collectors.joining("; "))
+                .replaceAll(UNNAMED_PATTERN_STRING, "");
 
         if (!result.isEmpty()) {
             update(columns, OTHER, result.length());

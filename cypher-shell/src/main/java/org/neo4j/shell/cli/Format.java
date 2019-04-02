@@ -11,14 +11,17 @@ public enum Format {
     // Intended for human consumption
     VERBOSE,
     // Intended for machine consumption (nothing except data is printed
-    PLAIN;
-    // TODO JSON, strictly intended for machine consumption with data formatted in JSON
+    PLAIN,
+    // Json
+    JSON;
 
     public static Format parse(@Nonnull String format) {
-        if (format.equalsIgnoreCase(PLAIN.name())) {
+        if (format.equalsIgnoreCase( PLAIN.name() )) {
             return PLAIN;
         } else if (format.equalsIgnoreCase( VERBOSE.name() )) {
             return VERBOSE;
+        } else if (format.equalsIgnoreCase( JSON.name() )) {
+            return JSON;
         } else {
             return isInputInteractive() && isOutputInteractive() ? VERBOSE : PLAIN;
         }

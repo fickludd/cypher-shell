@@ -16,7 +16,19 @@ public class PrettyPrinter {
 
     public PrettyPrinter(@Nonnull Format format) {
         this.statisticsCollector = new StatisticsCollector(format);
-        this.outputFormatter = format == Format.VERBOSE ? new TableOutputFormatter() : new SimpleOutputFormatter();
+        switch (format) {
+            case VERBOSE:
+                this.outputFormatter = new TableOutputFormatter();
+                break;
+
+            case JSON:
+                this.outputFormatter = new JsonOutputFormatter();
+                break;
+
+            case PLAIN:
+            default:
+                this.outputFormatter = new PlainOutputFormatter();
+        }
     }
 
     public String format(@Nonnull final BoltResult result) {
@@ -25,6 +37,6 @@ public class PrettyPrinter {
         String statistics = statisticsCollector.collect(result.getSummary());
         String resultOutput = outputFormatter.format(result);
         String footer = outputFormatter.formatFooter(result);
-        return OutputFormatter.joinNonBlanks(OutputFormatter.NEWLINE, asList(infoOutput, planOutput, resultOutput, footer, statistics));
+        return ValueFormatter.joinNonBlanks(ValueFormatter.NEWLINE, asList(infoOutput, planOutput, resultOutput, footer, statistics));
     }
 }

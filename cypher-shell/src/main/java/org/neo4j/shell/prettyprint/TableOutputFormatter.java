@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.neo4j.shell.prettyprint.ValueFormatter.NEWLINE;
+import static org.neo4j.shell.prettyprint.ValueFormatter.formatValue;
 
 public class TableOutputFormatter implements OutputFormatter {
 
@@ -40,7 +42,7 @@ public class TableOutputFormatter implements OutputFormatter {
         Map<String, Integer> columnSizes = calculateColumnSizes(columns, data);
         String headerLine = padColumnHeading(columnSizes);
         int lineWidth = headerLine.length() - 2;
-        String dashes = "+" + OutputFormatter.repeat('-', lineWidth) + "+";
+        String dashes = "+" + ValueFormatter.repeat('-', lineWidth) + "+";
         addHeader(sb, headerLine, dashes);
 
         data.forEach(record -> sb.append(padColumnHeading(columnSizes, record)).append(NEWLINE));
@@ -71,7 +73,7 @@ public class TableOutputFormatter implements OutputFormatter {
         columnSizes.entrySet().forEach(entry -> {
             sb.append(" ");
             String txt = formatValue(m.get(entry.getKey()));
-            String value = OutputFormatter.rightPad(txt, entry.getValue());
+            String value = ValueFormatter.rightPad(txt, entry.getValue());
             sb.append(value);
             sb.append(" |");
         });
@@ -83,7 +85,7 @@ public class TableOutputFormatter implements OutputFormatter {
         StringBuilder sb = new StringBuilder("|");
         for (String column : columnSizes.keySet()) {
             sb.append(" ");
-            sb.append(OutputFormatter.rightPad(column, columnSizes.get(column)));
+            sb.append(ValueFormatter.rightPad(column, columnSizes.get(column)));
             sb.append(" |");
         }
         return sb.toString();
@@ -114,7 +116,7 @@ public class TableOutputFormatter implements OutputFormatter {
     @Override
     @Nonnull
     public String formatInfo(@Nonnull ResultSummary summary) {
-        Map<String, Value> info = OutputFormatter.info(summary);
+        Map<String, Value> info = ResultSummaries.info(summary);
         List<Value> data = Collections.singletonList(Values.value(info));
         List<String> columns = new ArrayList<>(info.keySet());
         return formatValues(data, columns);

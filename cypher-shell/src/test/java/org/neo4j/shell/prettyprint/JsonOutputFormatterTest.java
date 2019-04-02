@@ -9,10 +9,10 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 
-public class TableOutputFormatterTest extends OutputFormatterTestBase {
+public class JsonOutputFormatterTest extends OutputFormatterTestBase {
 
-    public TableOutputFormatterTest() {
-        super(new PrettyPrinter(Format.VERBOSE));
+    public JsonOutputFormatterTest() {
+        super(new PrettyPrinter(Format.JSON));
     }
 
     @Override
@@ -20,8 +20,7 @@ public class TableOutputFormatterTest extends OutputFormatterTestBase {
 
         // then
         argumentMap.forEach((k, v) -> {
-            assertThat(actual, CoreMatchers.containsString("| " + k));
-            assertThat(actual, CoreMatchers.containsString("| " + v.toString()));
+            assertThat(actual, containsString(k + ": " + v.toString()));
         });
     }
 
@@ -29,15 +28,14 @@ public class TableOutputFormatterTest extends OutputFormatterTestBase {
     void assertBasicTable(String actual) {
 
         // then
-        assertThat(actual, containsString("| c1  | c2 |"));
-        assertThat(actual, containsString("| \"a\" | 42 |"));
+        assertThat(actual, containsString("{ c1: \"a\", c2: 42 }"));
     }
 
     @Override
     void assertTwoRows(String actual) {
 
         // then
-        assertThat(actual, containsString("| \"a\" | 42 |"));
-        assertThat(actual, containsString("| \"b\" | 43 |"));
+        assertThat(actual, containsString("{ c1: \"a\", c2: 42 }, { c1: \"b\", c2: 43 }"));
     }
+
 }

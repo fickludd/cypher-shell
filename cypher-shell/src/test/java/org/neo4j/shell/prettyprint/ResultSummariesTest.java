@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.neo4j.driver.internal.summary.InternalProfiledPlan.PROFILED_PLAN_FROM_VALUE;
 
-public class OutputFormatterTest
+public class ResultSummariesTest
 {
     @Test
     public void shouldReportTotalDBHits() {
@@ -44,7 +44,7 @@ public class OutputFormatterTest
                 55 );
 
         // When
-        Map<String,Value> info = OutputFormatter.info( summary );
+        Map<String,Value> info = ResultSummaries.info( summary );
 
         //Then
         assertThat( info.get( "DbHits" ).asLong(), equalTo( 2404L ) );

@@ -11,7 +11,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-public class SimpleOutputFormatter implements OutputFormatter {
+import static org.neo4j.shell.prettyprint.ValueFormatter.COMMA_SEPARATOR;
+import static org.neo4j.shell.prettyprint.ValueFormatter.NEWLINE;
+
+public class PlainOutputFormatter implements OutputFormatter {
 
     @Override
     @Nonnull
@@ -19,16 +22,23 @@ public class SimpleOutputFormatter implements OutputFormatter {
         StringBuilder sb = new StringBuilder();
         List<Record> records = result.getRecords();
         if (!records.isEmpty()) {
-            sb.append(records.get(0).keys().stream().collect(Collectors.joining(COMMA_SEPARATOR)));
+            sb.append(records.get(0).keys()
+                    .stream()
+                    .collect(Collectors.joining(COMMA_SEPARATOR)));
+
             sb.append("\n");
-            sb.append(records.stream().map(this::formatRecord).collect(Collectors.joining("\n")));
+            sb.append(records.stream()
+                    .map(this::formatRecord)
+                    .collect(Collectors.joining("\n")));
         }
         return sb.toString();
     }
 
     @Nonnull
     private String formatRecord(@Nonnull final Record record) {
-        return record.values().stream().map(this::formatValue).collect(Collectors.joining(COMMA_SEPARATOR));
+        return record.values().stream()
+                .map(ValueFormatter::formatValue)
+                .collect(Collectors.joining(COMMA_SEPARATOR));
     }
 
     @Nonnull
@@ -37,8 +47,9 @@ public class SimpleOutputFormatter implements OutputFormatter {
         if (!summary.hasPlan()) {
             return "";
         }
-        Map<String, Value> info = OutputFormatter.info(summary);
+        Map<String, Value> info = ResultSummaries.info(summary);
         return info.entrySet().stream()
-                .map( e -> String.format("%s: %s",e.getKey(),e.getValue())).collect(Collectors.joining(NEWLINE));
+                .map( e -> String.format("%s: %s", e.getKey(), e.getValue()))
+                .collect(Collectors.joining(NEWLINE));
     }
 }
